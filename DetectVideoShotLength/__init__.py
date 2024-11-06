@@ -7,7 +7,7 @@ from tqdm import tqdm
 from skimage.metrics import structural_similarity as compare_ssim
 
 from .main import (
-    detect_video_cuts_advanced,
+    detect_cuts,
     plot_scene_lengths,
     list_scenes_sorted_by_length,
     plot_scene_length_frequencies

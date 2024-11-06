@@ -5,7 +5,7 @@ setup(
     name='DetectVideoShotLength', # this is the package folder that contain the "main.py"
     description="A lightweight python package that analyzes shot lengths for video.",
 
-    version='0.8', # to increment this version number for each new version of this package
+    version='0.12', # to increment this version number for each new version of this package
     packages=find_packages(), 
     long_description=long_description,
     long_description_content_type="text/markdown",

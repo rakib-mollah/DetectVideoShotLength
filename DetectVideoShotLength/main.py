@@ -90,6 +90,9 @@ def detect_cuts(
     actual_cut_frames = []
     actual_cut_frames.append(frame_number)
 
+
+    saved_frame_count = 0
+    last_saved_second = -1  
     # Iterate through video frames within the specified time range
     with tqdm(total=int(adjusted_duration * fps), desc="Processing frames") as pbar:
         while True:
@@ -124,7 +127,7 @@ def detect_cuts(
                 ssim_diff = compare_ssim(prev_gray, curr_gray)
 
                 # Confirm cut if SSIM difference indicates a cut
-                if ssim_diff < threshold_ssim:
+                if ssim_diff < threshold_ssim and int(timestamp_seconds) != last_saved_second:
                     cut_frames.append(frame_number)
 
                     # Calculate timestamp in minutes and seconds
@@ -133,9 +136,14 @@ def detect_cuts(
 
                     # Save the frame at the detected cut
                     frame_filename = os.path.join(output_dir, f'frame_{minutes:02d}m_{seconds:02d}s.jpg')
+                    # frame_filename = os.path.join(output_dir, f'frame_{frame_number}_at_{minutes:02d}m_{seconds:02d}s.jpg')
+
                     actual_cut_frames.append(frame_filename)
                     cv2.imwrite(frame_filename, curr_frame)
                     prev_frame = curr_frame
+
+                    saved_frame_count += 1  # Increment the saved frame counter
+                    last_saved_second = int(timestamp_seconds) 
 
             # Update the previous histograms and frame
             prev_hist_r = curr_hist_r
@@ -156,14 +164,14 @@ def detect_cuts(
 
     # Calculate and print average shot length if enough cuts were detected
     if len(cut_frames) > 0:
-        avg_shot_length = adjusted_duration / len(set(actual_cut_frames))
+        avg_shot_length = adjusted_duration / len(set(cut_frames))
         avg_minutes = int(avg_shot_length // 60)
         avg_secs = int(avg_shot_length % 60)
         print(f"Average shot length: {avg_minutes} minutes {avg_secs} seconds")
     else:
         print("Not enough cuts detected to calculate shot length.")
 
-    print(f"Total cuts detected: {len((set(actual_cut_frames)))}")
+    print(f"Total cuts detected: {len((set(cut_frames)))}")
     return (cut_frames), fps, adjusted_duration
 
 
@@ -287,7 +295,6 @@ def plot_scene_length_frequencies(results):
     plt.legend()
     plt.show()
     # return plt.figure()
-
 
 
 

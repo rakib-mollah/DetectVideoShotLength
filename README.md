@@ -14,17 +14,19 @@ It is ideal for projects requiring video analysis, such as filmmaking, video edi
 
 ## Implementation
 
-Change `threshold_hist` from `0.10` to `0.20`,
-and `threshold_ssim` from `0.80` to `0.95`.
+Change `threshold_hist` from `0` to `1`, the default threshold would be `0.15`
+and `threshold_ssim` from `0.75` to `0.95`, default would be `0.85`
 
 Usually, the parameters give different results with day scenes and night scenes.
+
+If the video is large, a segment could be analyzed.
 
     import DetectVideoShotLength
 
     video_path = r"D:\___Research\average shot\test_video.mp4"
     output_dir = r"D:\___Research\average shot\video"
     
-    results = DetectVideoShotLength.detect_cuts(video_path, output_dir, threshold_hist=0.20, threshold_ssim=0.80)
+    results = DetectVideoShotLength.detect_cuts(video_path, output_dir, threshold_hist=0.20, threshold_ssim=0.80, min_minutes=5, max_minutes=7)
 
     DetectVideoShotLength.plot_scene_lengths(results)
     DetectVideoShotLength.list_scenes_sorted_by_length(results)
